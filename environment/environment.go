@@ -22,36 +22,6 @@ type dir struct {
     Parent string
 }
 
-// dirIsRegistered is a helper function to simplify checking if a Directory
-// is registered based on the directory's name.
-func (s *Environment) dirIsRegistered(name string) bool {
-    for _, c := range s.dirs {
-        if c.Name == name {
-            return true
-        }
-    }
-    return false
-}
-// isValidParentDir is a helper function to simplify checking if a Directory
-// is already registered and is a valid parent to use.
-func (s *Environment) isValidParentDir(parent_dir string) bool {
-    if parent_dir == "" {
-        return true
-    }
-    return s.dirIsRegistered(parent_dir)
-}
-
-// dirPath is a helper function designed to build out a direco's complete
-// path to the Environemnt BasePath.
-func (s *Environment) dirPath(dir_name string) (dir_path string) {
-    for _, c := range s.dirs {
-        if c.Name == dir_name {
-            return s.dirPath(c.Parent)+string(os.PathSeparator)+dir_name
-        }
-    }
-    return dir_name
-}
-
 // NewEnvironment creates and returns a new instance of type Environment.
 // If base_path is left as empty string then the BasePath defaults to the
 // location where the programs executable lives. If base_path is not an empty
@@ -78,7 +48,7 @@ func NewEnvironment(base_path string) (e Environment) {
         if base_path_stat.IsDir() == false {
             log.Fatal("base_path provided to NewEnvironment is not a directory.")
         }
-        if base_path_stat.Mode().Perm() < 0777 {
+        if base_path_stat.Mode().Perm() < 0755 {
             log.Fatal("base_path provided to NewEnvironment has incompatible permissions.")
         }
         e.BasePath = base_path
@@ -168,4 +138,38 @@ func NewDefaultEnvironment(master_dir string) (e Environment, archive, data, set
     archive, data, settings = e.RegisterDefaultDirs(master_dir)
     e.CreateDirs()
     return
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Helper functions
+////////////////////////////////////////////////////////////////////////////////
+
+// dirIsRegistered is a helper function to simplify checking if a Directory
+// is registered based on the directory's name.
+func (s *Environment) dirIsRegistered(name string) bool {
+    for _, c := range s.dirs {
+        if c.Name == name {
+            return true
+        }
+    }
+    return false
+}
+// isValidParentDir is a helper function to simplify checking if a Directory
+// is already registered and is a valid parent to use.
+func (s *Environment) isValidParentDir(parent_dir string) bool {
+    if parent_dir == "" {
+        return true
+    }
+    return s.dirIsRegistered(parent_dir)
+}
+
+// dirPath is a helper function designed to build out a direco's complete
+// path to the Environemnt BasePath.
+func (s *Environment) dirPath(dir_name string) (dir_path string) {
+    for _, c := range s.dirs {
+        if c.Name == dir_name {
+            return s.dirPath(c.Parent)+string(os.PathSeparator)+dir_name
+        }
+    }
+    return dir_name
 }
