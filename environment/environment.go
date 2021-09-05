@@ -28,17 +28,17 @@ type dir struct {
 // string then the path is checked to ensure that it is a directory that can be
 // written to.
 func New(base_path string) (e Environment) {
-    var bin_path string
-    var program_path string
-    var err error
     // Determine the path to the folder the executable is in.
-    bin_path, err = os.Executable()
+    bin_path, err := os.Executable()
     if err != nil {
         log.Fatal(err)
     }
-    program_path = filepath.Dir(bin_path)
+    e.ProgramPath = filepath.Dir(bin_path)
 
-    if base_path != "" {
+    if base_path == "" {
+        // BasePath defaults to the folder the program lives in.
+        e.BasePath = e.ProgramPath
+    } else {
         // Determine if the base_path provided is valid.
         var base_path_stat os.FileInfo
         base_path_stat, err = os.Stat(base_path)
@@ -52,24 +52,17 @@ func New(base_path string) (e Environment) {
             log.Fatal("base_path provided to NewEnvironment has incompatible permissions.")
         }
         e.BasePath = base_path
-    } else {
-        // BasePath defaults to the folder the program lives in.
-        e.BasePath = program_path
     }
-    e.ProgramPath = program_path
-
     return
 }
 
-// RegisterDir is how a directory is included in the Environment. dir_name is
+// AddDir is how a directory is included in the Environment. dir_name is
 // how a directory is referenced within the Environment object and also will be
 // the name that is given to the directory when it is created, dir_name cannot
-// be the same as an already registered dir. parent_dir is the name of another
-// (already registered) directory that this new directory will live under.
-// The same name provided to RegisterDir is also the return value to simplify
-// storing the directory name, since you will be using the name again in the
-// future to retrieve the directory's full path (for example).
-func (s *Environment) RegisterDir(dir_name string, parent_dir string) (reg_name string) {
+// be the same as an already added dir and can also not be an empty string.
+// parent_dir is the name of another (already added) directory that this new
+// directory will live under. AddDir then returns the full path of dir_name.
+func (s *Environment) AddDir(dir_name string, parent_dir string) (dir_path string) {
     // Don't allow empty string as a dir name. This breaks stuff.
     if dir_name == "" {
         log.Fatal("Directory name cannot be empty string.")
@@ -92,17 +85,17 @@ func (s *Environment) RegisterDir(dir_name string, parent_dir string) (reg_name 
     s.dirs = append(s.dirs, d)
 
     // Return the name of the newly registered dir.
-    reg_name = d.Name
+    dir_path = s.FullPath(d.Name)
     return
 }
 
-// FullPath takes a directory name previously registered using RegisterDir and
+// FullPath takes a directory name previously registered using AddDir and
 // then returns that directory's absolute path.
 func (s *Environment) FullPath(dir_name string) string {
     return s.BasePath+s.dirPath(dir_name)
 }
 
-// CreateDirs creates all dirs previosly registered with RegisterDir.
+// CreateDirs creates all dirs previosly registered with AddDir.
 // These directories are created in BasePath.
 func (s *Environment) CreateDirs() {
     for _, d := range s.dirs {

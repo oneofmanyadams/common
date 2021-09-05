@@ -14,13 +14,13 @@ func ExampleNew() {
         log.Fatal(err)
     }
     env := New(home_path)
-    env_maf := env.RegisterDir("base", "")
-    env_data := env.RegisterDir("data", "base")
-    env_stng := env.RegisterDir("settings", "base")
+    env_base_path := env.RegisterDir("base", "")
+    env_data_path := env.RegisterDir("data", "base")
+    env_stng_path := env.RegisterDir("settings", "base")
     env.CreateDirs()
-    fmt.Println(env.FullPath(env_maf))
-    fmt.Println(env.FullPath(env_data))
-    fmt.Println(env.FullPath(env_stng))
+    fmt.Println(env_base_path)
+    fmt.Println(env_data_path)
+    fmt.Println(env_stng_path)
     // Output: C:\Users\Me\base
     // C:\Users\Me\base\data
     // C:\Users\Me\base\settings
