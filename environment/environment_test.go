@@ -14,9 +14,9 @@ func ExampleNew() {
         log.Fatal(err)
     }
     env := New(home_path)
-    env_base_path := env.RegisterDir("base", "")
-    env_data_path := env.RegisterDir("data", "base")
-    env_stng_path := env.RegisterDir("settings", "base")
+    env_base_path := env.AddDir("base", "")
+    env_data_path := env.AddDir("data", "base")
+    env_stng_path := env.AddDir("settings", "base")
     env.CreateDirs()
     fmt.Println(env_base_path)
     fmt.Println(env_data_path)

@@ -1,4 +1,4 @@
-// Package env provides some boiler plate funtionality for easily
+// Package environment provides some boiler plate funtionality for easily
 // creating and maintaining environment information for Go programs.
 package environment
 
