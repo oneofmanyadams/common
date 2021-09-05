@@ -97,18 +97,11 @@ func (s *Environment) FullPath(dir_name string) (pull_path string) {
     return s.BasePath+s.dirPath(dir_name)
 }
 
-// CreateDirs first creates the BasePath folder if it doesn't already exist.
-// Then it creates all dirs previosly registered with RegisterDir.
+// CreateDirs creates all dirs previosly registered with RegisterDir.
+// These directories are created in BasePath.
 func (s *Environment) CreateDirs() {
-    var err error
-    // Create BasePath directory
-    err = os.MkdirAll(s.BasePath, 0777)
-    if err != nil {
-        log.Fatal(err)
-        return
-    }
     for _, d := range s.dirs {
-        os.Mkdir(s.BasePath+s.dirPath(d.Name), 0777)
+        os.Mkdir(s.BasePath+s.dirPath(d.Name), 0755)
     }
 }
 
