@@ -98,7 +98,7 @@ func (s *Environment) RegisterDir(dir_name string, parent_dir string) (reg_name 
 
 // FullPath takes a directory name previously registered using RegisterDir and
 // then returns that directory's absolute path.
-func (s *Environment) FullPath(dir_name string) (pull_path string) {
+func (s *Environment) FullPath(dir_name string) string {
     return s.BasePath+s.dirPath(dir_name)
 }
 
@@ -108,34 +108,6 @@ func (s *Environment) CreateDirs() {
     for _, d := range s.dirs {
         os.Mkdir(s.BasePath+s.dirPath(d.Name), 0755)
     }
-}
-
-// RegisterDefaultDirs is a quick little shortcut to register a few dirs
-// that are created for a lot of different programs. The main parent directory
-// is provided by master_dir, all the default directories are all created under
-// that. The default directory names are then returned.
-func (s *Environment) RegisterDefaultDirs(master_dir string) (archive, data, settings string) {
-    s.RegisterDir(master_dir, "")
-    archive = s.RegisterDir("archive", master_dir)
-    data = s.RegisterDir("data", master_dir)
-    settings = s.RegisterDir("settings", master_dir)
-    return
-}
-
-// NewDefault provides a way to create a generic environment in just
-// a single function call. It defaults to creating master_dir directory in the
-// user's home directory, then creates the 3 dirs created by RegisterDefaultDirs
-// under master_dir and finally returns their names after the new Environemnt
-// object is returned. master_dir cannot be empty string.
-func NewDefault(master_dir string) (e Environment, archive, data, settings string) {
-    base_path, err := os.UserHomeDir()
-    if err != nil {
-        log.Fatal(err)
-    }
-    e = New(base_path)
-    archive, data, settings = e.RegisterDefaultDirs(master_dir)
-    e.CreateDirs()
-    return
 }
 
 ////////////////////////////////////////////////////////////////////////////////
