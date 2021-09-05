@@ -91,14 +91,6 @@ func NewEnvironment(base_path string) (e Environment) {
     return
 }
 
-// SetBasePath allows the implementing program to override where the environment
-// stores, creates, and uses it's folders created by RegisterDir.
-// The default location for these is the same place that the executable lives,
-// so overriding that can be usefull in keeping a "bin" folder clear (for example).
-func (s *Environment) SetBasePath(full_path string) {
-    s.BasePath = full_path
-}
-
 // RegisterDir is how a directory is included in the Environment. dir_name is
 // how a directory is referenced within the Environment object and also will be
 // the name that is given to the directory when it is created, dir_name cannot
