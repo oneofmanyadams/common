@@ -22,12 +22,12 @@ type dir struct {
     Parent string
 }
 
-// NewEnvironment creates and returns a new instance of type Environment.
+// New creates and returns a new instance of type Environment.
 // If base_path is left as empty string then the BasePath defaults to the
 // location where the programs executable lives. If base_path is not an empty
 // string then the path is checked to ensure that it is a directory that can be
 // written to.
-func NewEnvironment(base_path string) (e Environment) {
+func New(base_path string) (e Environment) {
     var bin_path string
     var program_path string
     var err error
@@ -70,6 +70,11 @@ func NewEnvironment(base_path string) (e Environment) {
 // storing the directory name, since you will be using the name again in the
 // future to retrieve the directory's full path (for example).
 func (s *Environment) RegisterDir(dir_name string, parent_dir string) (reg_name string) {
+    // Don't allow empty string as a dir name. This breaks stuff.
+    if dir_name == "" {
+        log.Fatal("Directory name cannot be empty string.")
+    }
+
     // Don't register if a directory of the same name already exists.
     if s.dirIsRegistered(dir_name) == true {
         log.Fatal("Directory "+dir_name+" already registered.")
@@ -117,17 +122,17 @@ func (s *Environment) RegisterDefaultDirs(master_dir string) (archive, data, set
     return
 }
 
-// NewDefaultEnvironment provides a way to create a generic environment in just
-// a single function call. It defaults to creating a main parent directory in
-// the user's home directory, then creates the 3 dirs created by
-// RegisterDefaultDirs under that main parent dir and finally returns their
-// names after the new Environemnt object is returned.
-func NewDefaultEnvironment(master_dir string) (e Environment, archive, data, settings string) {
+// NewDefault provides a way to create a generic environment in just
+// a single function call. It defaults to creating master_dir directory in the
+// user's home directory, then creates the 3 dirs created by RegisterDefaultDirs
+// under master_dir and finally returns their names after the new Environemnt
+// object is returned. master_dir cannot be empty string.
+func NewDefault(master_dir string) (e Environment, archive, data, settings string) {
     base_path, err := os.UserHomeDir()
     if err != nil {
         log.Fatal(err)
     }
-    e = NewEnvironment(base_path)
+    e = New(base_path)
     archive, data, settings = e.RegisterDefaultDirs(master_dir)
     e.CreateDirs()
     return

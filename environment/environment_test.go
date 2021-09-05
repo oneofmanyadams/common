@@ -4,8 +4,8 @@ import (
     "fmt"
 )
 
-func ExampleNewEnvironment() {
-    env := NewEnvironment("C:\\Users\\Me")
+func ExampleNew() {
+    env := New("C:\\Users\\Me")
     env_maf := env.RegisterDir("mainAppFolder", "")
     env_data := env.RegisterDir("data", "mainAppFolder")
     env_stng := env.RegisterDir("settings", "mainAppFolder")
@@ -18,9 +18,9 @@ func ExampleNewEnvironment() {
     // C:\Users\Me\mainAppFolder\settings
 }
 
-func ExampleNewDefaultEnvironment() {
+func ExampleNewDefault() {
     // assuming the user's HomeDir is C:\Users\Me
-    env, env_archive, env_data, env_settings := NewDefaultEnvironment("mainAppFolder")
+    env, env_archive, env_data, env_settings := NewDefault("mainAppFolder")
     fmt.Println(env.FullPath(env_archive))
     fmt.Println(env.FullPath(env_data))
     fmt.Println(env.FullPath(env_settings))
