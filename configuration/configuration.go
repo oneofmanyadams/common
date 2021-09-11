@@ -4,7 +4,10 @@ package configuration
 
 import (
     "encoding/json"
+    "errors"
     "io"
+    "io/fs"
+    "log"
     "os"
 )
 
@@ -21,6 +24,15 @@ type Conf struct {
 func New(config_path string) (c Configuration) {
     // Check if configuration already exists in provided path.
     //      If it doesn't create it based on embeded defaults.
+    _, err := os.Stat(config_path)
+    if err != nil {
+        if errors.Is(err, fs.ErrNotExist) {
+            c.PopulateSampleData()
+            c.Save(config_path)
+        } else {
+            log.Fatal(err)
+        }
+    }
 
     // Load configuration from JSON data.
     c.Load(config_path)
@@ -31,7 +43,7 @@ func New(config_path string) (c Configuration) {
 // It then loads that data into the calling Configuration object.
 func (s *Configuration) Load(file_path string) {
     // open file_path
-    file, err := os.Open(config_path)
+    file, err := os.Open(file_path)
     if err != nil {
     	log.Fatal(err)
     }
@@ -42,12 +54,28 @@ func (s *Configuration) Load(file_path string) {
     	log.Fatal(err)
     }
     // take read json data and load it into the soon-to-be returned Configuration
-    err := json.Unmarshal(json_data, s)
+    err = json.Unmarshal(json_data, s)
     if err != nil {
         log.Fatal(err)
     }
 }
 
 func (s *Configuration) Save(file_path string) {
+    // Marshal Configuration
+    d, err := json.MarshalIndent(s, "", "   ")
+    if err != nil {
+        log.Fatal(err)
+        return
+    }
+    // write Marshaled Configuration data
+    err = os.WriteFile(file_path, d, 0666)
+    if err != nil {
+        log.Fatal(err)
+        return
+    }
+}
 
+func (s *Configuration) PopulateSampleData() {
+    conf_1 := Conf{Name:"Setting1", Value:"ValueOne"}
+    s.Confs = []Conf{conf_1}
 }
