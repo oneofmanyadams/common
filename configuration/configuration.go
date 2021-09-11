@@ -18,6 +18,7 @@ type Configuration struct {
 type Conf struct {
     Name string
     Value string
+    SubConfs Configuration
 }
 
 
@@ -76,6 +77,6 @@ func (s *Configuration) Save(file_path string) {
 }
 
 func (s *Configuration) PopulateSampleData() {
-    conf_1 := Conf{Name:"Setting1", Value:"ValueOne"}
+    conf_1 := Conf{Name:"Setting1", Value:"ValueOne", SubConfs:Configuration{}}
     s.Confs = []Conf{conf_1}
 }
