@@ -12,13 +12,31 @@ import (
 )
 
 type Configuration struct {
-    Confs []Conf
+    Title string
+    Value string
+    Hooks []Hook
 }
 
-type Conf struct {
+type Hook struct {
     Name string
-    Value string
-    SubConfs Configuration
+    Filters []Filter
+}
+
+type Filter struct {
+    Key string
+    Val string
+    On bool
+}
+
+var Sample Configuration
+
+func init() {
+    Sample.Title = "Config_Title"
+    Sample.Value = "Config_Value"
+    filters := []Filter{Filter{Key:"key",Val:"val",On:true},Filter{Key:"key",Val:"val",On:true}}
+    h1 := Hook{Name:"hook_name",Filters:filters}
+    h2 := Hook{Name:"hook_name",Filters:filters}
+    Sample.Hooks = []Hook{h1, h2}
 }
 
 
@@ -77,6 +95,7 @@ func (s *Configuration) Save(file_path string) {
 }
 
 func (s *Configuration) PopulateSampleData() {
-    conf_1 := Conf{Name:"Setting1", Value:"ValueOne", SubConfs:Configuration{}}
-    s.Confs = []Conf{conf_1}
+    s.Title = Sample.Title
+    s.Value = Sample.Value
+    s.Hooks = Sample.Hooks
 }
