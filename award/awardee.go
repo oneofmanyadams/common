@@ -2,6 +2,7 @@ package award
 
 import (
     "encoding/json"
+    "errors"
     "fmt"
     "io"
     "io/ioutil"
@@ -17,13 +18,27 @@ type Awardee interface {
 ////////////////////////////////////////////
 ////////////////////////////////////////////
 ////////////////////////////////////////////
-func LoadAwardee(s Awardee, awardee_path string) {
+func LoadAwardee(s Awardee, awardee_path string) error {
+    if s.GetId() == "" {
+        return errors.New("Awardee Id cannot be empty string.")
+    }
+    af := awardee_path+string(os.PathSeparator)+s.GetId()+".json"
     LoadAwardeeAwards(s, awardee_path)
-    LoadAwardeeFile(s, awardee_path)
+    LoadAwardeeFile(s, af)
+    return nil
 }
-func SaveAwardee(s Awardee, awardee_path string) {
+func SaveAwardee(s Awardee, awardee_path string) error {
+    if s.GetId() == "" {
+        return errors.New("Awardee Id cannot be empty string.")
+    }
+    af := awardee_path+string(os.PathSeparator)+s.GetId()+".json"
+
+    // This is currently not at the right level, it needs to go one lower
     SaveAwardeeAwards(s, awardee_path)
-    SaveAwardeeFile(s, awardee_path)
+
+
+    SaveAwardeeFile(s, af)
+    return nil
 }
 
 ////////////////////////////////////////////
@@ -39,7 +54,7 @@ func LoadAwardeeAwards(s Awardee, awardee_path string) {
     // read all .json files.
     for _, f := range files {
         // load json data into an award struct, append to s Awardee
-        fmt.Println(f)
+        fmt.Println(f.Name())
     }
 }
 
