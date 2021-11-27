@@ -1,5 +1,5 @@
-// data/csv package is a simple wrapper for the builtin csv package.
-// simplifies a lot of the typical and basic logic of reading and writing csv data.
+// Package data/csv is a simple wrapper for the builtin csv package. It
+// simplifies some of the basic logic of reading and writing csv data.
 package csv
 
 import (
@@ -26,11 +26,11 @@ func New(data_location string) (new_csv Csv) {
 	return
 }
 
-/////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //// Read Functions
-/////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-// LoadNewData is a quick way of defining and loading CSV data in one function call.
+// LoadNewData is a quick way of loading CSV data in one function call.
 // Useful for keeping entire csv read logic inside of one for loop.
 // !!! This skips the first line by default. 
 func LoadNewData(data_location string) (new_csv Csv) {
@@ -87,11 +87,12 @@ func (c *Csv) ForceClose() {
 	c.fileReference.Close()
 }
 
-/////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //// Write Functions
-/////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-// WriteNewData is a quick way of creating a new Csv instance and Writer in the same call.
+// WriteNewData is a quick way of creating a new Csv instance and Writer
+// in the same call.
 func WriteNewData(data_location string) (new_csv Csv) {
 	new_csv = New(data_location)
 	new_csv.WriteData()
@@ -116,7 +117,7 @@ func (c *Csv) WriteData() () {
 }
 
 // Write Record writes the rovided record to the csv file reference.
-// The data will not actually be written to the file until WriteRecordsToFile is called.
+// The data will not be written to the file until WriteRecordsToFile is called.
 func (c *Csv) WriteRecord(record []string) {
 	write_error := c.writer.Write(record)
 	if write_error != nil {
