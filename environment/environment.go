@@ -48,9 +48,10 @@ func New(base_path string) (e Environment) {
         if base_path_stat.IsDir() == false {
             log.Fatal("base_path provided to NewEnvironment is not a directory.")
         }
-        if base_path_stat.Mode().Perm() < 0755 {
-            log.Fatal("base_path provided to NewEnvironment has incompatible permissions.")
-        }
+        // This doesn't seem to work the way I want it to...
+        // if base_path_stat.Mode().Perm() < 0755 {
+        //     log.Fatal("base_path provided to NewEnvironment has incompatible permissions.")
+        // }
         e.BasePath = base_path
     }
     return
