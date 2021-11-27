@@ -10,7 +10,7 @@ import (
 
 // Environment stores path information in a standardized and centralized spot.
 // This should not be created directly and instead be initialized
-// with NewEnvironment().
+// with New().
 type Environment struct {
     ProgramPath string
     BasePath string
@@ -21,6 +21,10 @@ type dir struct {
     Name string
     Parent string
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Constructor
+////////////////////////////////////////////////////////////////////////////////
 
 // New creates and returns a new instance of type Environment.
 // If base_path is left as empty string then the BasePath defaults to the
@@ -56,6 +60,10 @@ func New(base_path string) (e Environment) {
     }
     return
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Public Functions
+////////////////////////////////////////////////////////////////////////////////
 
 // AddDir is how a directory is included in the Environment. dir_name is
 // how a directory is referenced within the Environment object and also will be

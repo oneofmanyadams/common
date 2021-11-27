@@ -8,6 +8,8 @@ import (
 	"encoding/csv"
 )
 
+// Csv is the main type that is used to read/write csv data. it should not be
+// used directly and instead be created by using the New() function.
 type Csv struct {
 	Path string
 	HasMoreRecords bool
@@ -20,6 +22,10 @@ type Csv struct {
 	reader *csv.Reader
 	writer *csv.Writer
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Constructor
+////////////////////////////////////////////////////////////////////////////////
 
 func New(data_location string) (new_csv Csv) {
 	new_csv.Path = data_location
